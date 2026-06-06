@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>co-tuong-sat — Design Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1A1210;
+      --surface: #2C1810;
+      --board: #8B5A2B;
+      --board-lines: #5C3D1E;
+      --gold: #D4AF37;
+      --gold-hover: #E5C145;
+      --red: #C41E3A;
+      --red-dark: #8B1528;
+      --black: #1A1A1A;
+      --black-light: #3A3A3A;
+      --river: #4A90D9;
+      --text-primary: #F5E6D3;
+      --text-secondary: #A89080;
+      --text-muted: #6B5D50;
+      --success: #4CAF50;
+      --warning: #FFC107;
+      --error: #F44336;
+      --shadow-card: 0 2px 8px rgba(0,0,0,0.4);
+      --shadow-modal: 0 8px 32px rgba(0,0,0,0.6);
+      --shadow-glow-gold: 0 0 12px rgba(212,175,55,0.5);
+      --shadow-glow-green: 0 0 8px rgba(76,175,80,0.5);
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar */
+    #sidebar {
+      width: 240px;
+      background: var(--surface);
+      border-right: 1px solid rgba(212,175,55,0.2);
+      padding: 24px 16px;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    #sidebar h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 18px;
+      margin-bottom: 24px;
+      padding: 0 8px;
+    }
+
+    #sidebar .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin: 16px 0 8px;
+      padding: 0 8px;
+    }
+
+    #sidebar button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 150ms;
+    }
+
+    #sidebar button:hover {
+      background: rgba(212,175,55,0.1);
+      color: var(--gold);
+    }
+
+    #sidebar button.active {
+      background: rgba(212,175,55,0.2);
+      color: var(--gold);
+    }
+
+    #sidebar button .badge {
+      float: right;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Main Content */
+    #main {
+      margin-left: 240px;
+      flex: 1;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    #viewport-toggle {
+      margin-bottom: 24px;
+      display: flex;
+      gap: 8px;
+    }
+
+    #viewport-toggle button {
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(212,175,55,0.3);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    #viewport-toggle button.active {
+      background: var(--gold);
+      color: var(--bg);
+      border-color: var(--gold);
+    }
+
+    #screen-container {
+      transition: max-width 300ms;
+    }
+
+    #screen-container.mobile {
+      max-width: 375px;
+      margin: 0 auto;
+    }
+
+    /* Screen Sections */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 150ms;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(212,175,55,0.1);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: var(--text-primary);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--gold);
+      border: none;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+
+    .btn-lg {
+      padding: 16px 32px;
+      font-size: 16px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    .card-hover:hover {
+      border-color: var(--gold);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .badge-success { background: rgba(76,175,80,0.2); color: var(--success); }
+    .badge-warning { background: rgba(255,193,7,0.2); color: var(--warning); }
+    .badge-error { background: rgba(244,67,54,0.2); color: var(--error); }
+    .badge-neutral { background: rgba(168,144,128,0.2); color: var(--text-secondary); }
+
+    /* Input */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--board-lines);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.2);
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: var(--shadow-modal);
+    }
+
+    .modal h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    /* ========== LOBBY SCREEN ========== */
+    #lobby {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .lobby-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .lobby-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .lobby-header p {
+      color: var(--text-secondary);
+    }
+
+    /* Board Preview */
+    .board-preview {
+      width: 240px;
+      height: 267px;
+      margin: 0 auto 32px;
+      position: relative;
+    }
+
+    .board-grid-preview {
+      width: 100%;
+      height: 100%;
+      background: var(--board);
+      border: 3px solid var(--board-lines);
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      position: relative;
+    }
+
+    .board-grid-preview::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 40%;
+      bottom: 40%;
+      background: rgba(74,144,217,0.15);
+      border-top: 2px solid var(--river);
+      border-bottom: 2px solid var(--river);
+    }
+
+    .preview-piece {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      z-index: 1;
+    }
+
+    .preview-piece.red {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      border: 2px solid var(--gold);
+      color: white;
+    }
+
+    .preview-piece.black {
+      background: linear-gradient(135deg, var(--black), var(--black-light));
+      border: 2px solid #888;
+      color: white;
+    }
+
+    /* Action Cards */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .action-card {
+      text-align: center;
+    }
+
+    .action-card h3 {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Code Input */
+    .code-input-group {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .code-input {
+      width: 48px;
+      height: 56px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--board-lines);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+    }
+
+    .code-input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    /* Room List */
+    .room-list {
+      margin-top: 32px;
+    }
+
+    .room-list h3 {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .room-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: var(--surface);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+    }
+
+    .room-card:hover {
+      border-color: var(--gold);
+    }
+
+    .room-info h4 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .room-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* ========== GAME SCREEN ========== */
+    #game-screen {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .game-header a {
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .room-code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(212,175,55,0.1);
+      padding: 4px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--gold);
+    }
+
+    /* Player Panel */
+    .player-panel {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+
+    .player-panel.current-turn {
+      border-color: var(--gold);
+      box-shadow: var(--shadow-glow-gold);
+    }
+
+    .player-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .player-avatar.red { background: var(--red); color: white; }
+    .player-avatar.black { background: var(--black); color: white; border: 2px solid #888; }
+
+    .player-info { flex: 1; }
+    .player-info h4 { font-size: 16px; margin-bottom: 2px; }
+    .player-info p { font-size: 12px; color: var(--text-secondary); }
+    .player-info p.turn { color: var(--gold); font-weight: 600; }
+
+    .captured-pieces {
+      display: flex;
+      gap: 4px;
+    }
+
+    .captured-piece {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      opacity: 0.7;
+    }
+
+    .captured-piece.red { background: var(--red); color: white; }
+    .captured-piece.black { background: var(--black); color: white; }
+
+    /* Game Board */
+    .game-board {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .board {
+      width: 100%;
+      aspect-ratio: 9 / 10;
+      background: var(--board);
+      border: 3px solid var(--board-lines);
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      position: relative;
+    }
+
+    /* River */
+    .board::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 40%;
+      bottom: 40%;
+      background: rgba(74,144,217,0.1);
+      border-top: 2px solid var(--river);
+      border-bottom: 2px solid var(--river);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .board-cell {
+      position: relative;
+      border: 0.5px solid var(--board-lines);
+    }
+
+    /* Palace diagonal markers */
+    .board-cell.palace-tl::after,
+    .board-cell.palace-tr::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, transparent 45%, var(--board-lines) 45%, var(--board-lines) 55%, transparent 55%);
+    }
+
+    .board-cell.palace-bl::after,
+    .board-cell.palace-br::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top right, transparent 45%, var(--board-lines) 45%, var(--board-lines) 55%, transparent 55%);
+    }
+
+    /* Pieces on board */
+    .piece {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 150ms, box-shadow 150ms;
+      z-index: 2;
+    }
+
+    .piece.red {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      border: 2px solid var(--gold);
+      color: white;
+    }
+
+    .piece.black {
+      background: linear-gradient(135deg, var(--black), var(--black-light));
+      border: 2px solid #aaa;
+      color: white;
+    }
+
+    .piece.selected {
+      box-shadow: 0 0 0 3px var(--gold);
+      transform: scale(1.05);
+    }
+
+    .piece.in-check {
+      animation: check-pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes check-pulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(244,67,54,0.5); }
+      50% { box-shadow: 0 0 16px rgba(244,67,54,0.9); }
+    }
+
+    /* Valid moves */
+    .valid-move {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(76,175,80,0.7);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      animation: valid-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes valid-pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    /* Move History */
+    .move-history {
+      background: var(--surface);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .move-history h4 {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .move-list {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    .move-item {
+      padding: 4px 0;
+      color: var(--text-secondary);
+    }
+
+    .move-item.red { color: var(--red); }
+    .move-item .move-num { color: var(--text-muted); }
+
+    /* Game Actions */
+    .game-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* ========== GAME OVER MODAL ========== */
+    .game-over-content {
+      text-align: center;
+    }
+
+    .game-over-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    .game-over-content h2.red { color: var(--red); }
+    .game-over-content h2.black { color: var(--text-primary); }
+    .game-over-content h2.draw { color: var(--text-secondary); }
+
+    .game-over-content .condition {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .game-over-content .move-count {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .game-over-content .confetti {
+      font-size: 48px;
+      margin-bottom: 24px;
+    }
+
+    /* ========== HOW TO PLAY MODAL ========== */
+    .rules-content {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .rules-content h4 {
+      color: var(--gold);
+      font-size: 14px;
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .rules-content p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .piece-legend {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 16px;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+
+    .piece-legend .piece-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .piece-legend .piece-icon.red { background: var(--red); color: white; }
+    .piece-legend .piece-icon.black { background: var(--black); color: white; }
+
+    .piece-legend span:last-child { color: var(--text-primary); }
+
+    /* ========== SIDE SELECTION MODAL ========== */
+    .side-options {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .side-option {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--radius-lg);
+      border: 2px solid transparent;
+      background: rgba(0,0,0,0.3);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 150ms;
+    }
+
+    .side-option:hover {
+      border-color: var(--gold);
+      transform: scale(1.05);
+    }
+
+    .side-option .icon {
+      font-size: 32px;
+    }
+
+    .side-option .label {
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .side-option.red .icon { color: var(--red); }
+    .side-option.black .icon { color: var(--text-primary); }
+    .side-option.random .icon { color: var(--gold); }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 640px) {
+      #sidebar {
+        display: none;
+      }
+
+      #main {
+        margin-left: 0;
+        padding: 16px;
+      }
+
+      .lobby-header h1 { font-size: 32px; }
+      .action-grid { grid-template-columns: 1fr; }
+      .piece { width: 32px; height: 32px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar">
+    <h2>co-tuong-sat</h2>
+    <div class="section-title">Screens</div>
+    <button class="active" data-screen="lobby">Lobby</button>
+    <button data-screen="game">Game Board</button>
+    <button data-screen="game-over">Game Over</button>
+    <button data-screen="side-selection">Side Selection</button>
+    <button data-screen="rules">How to Play</button>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main">
+    <div id="viewport-toggle">
+      <button class="active" data-view="desktop">Desktop</button>
+      <button data-view="mobile">Mobile (375px)</button>
+    </div>
+
+    <div id="screen-container">
+      <!-- ========== LOBBY SCREEN ========== -->
+      <section id="lobby" class="screen active">
+        <div class="lobby-header">
+          <h1>co-tuong-sat</h1>
+          <p>Cờ Tướng Sâm — Vietnamese Chess</p>
+        </div>
+
+        <div class="board-preview">
+          <div class="board-grid-preview">
+            <!-- Sample pieces -->
+            <div class="preview-piece red" style="top: 15%; left: 33%;">CT</div>
+            <div class="preview-piece red" style="top: 15%; left: 55%;">CT</div>
+            <div class="preview-piece black" style="top: 75%; left: 33%;">CT</div>
+            <div class="preview-piece black" style="top: 75%; left: 55%;">CT</div>
+          </div>
+        </div>
+
+        <div class="action-grid">
+          <div class="card action-card">
+            <h3>Quick Game</h3>
+            <button class="btn btn-primary btn-lg" onclick="showModal('side-selection')">Play vs AI</button>
+          </div>
+          <div class="card action-card">
+            <h3>Multiplayer</h3>
+            <button class="btn btn-secondary btn-lg" onclick="showModal('create-room')">Create Room</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px;">
+          <h3 style="text-align: center; margin-bottom: 16px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Join Room</h3>
+          <div class="code-input-group">
+            <input type="text" class="code-input" maxlength="1" value="A">
+            <input type="text" class="code-input" maxlength="1" value="B">
+            <input type="text" class="code-input" maxlength="1" value="C">
+            <input type="text" class="code-input" maxlength="1" value="1">
+            <input type="text" class="code-input" maxlength="1" value="2">
+            <input type="text" class="code-input" maxlength="1" value="3">
+          </div>
+          <button class="btn btn-primary" style="width: 100%;">Join Room</button>
+        </div>
+
+        <div class="room-list">
+          <h3>Public Rooms</h3>
+          <div class="room-card">
+            <div class="room-info">
+              <h4>Phòng của Minh</h4>
+              <div class="room-meta">Code: ABC123 · 1/2 players</div>
+            </div>
+            <span class="badge badge-success">Waiting</span>
+          </div>
+          <div class="room-card">
+            <div class="room-info">
+              <h4>Room Test</h4>
+              <div class="room-meta">Code: XYZ789 · 2/2 players</div>
+            </div>
+            <span class="badge badge-warning">In Game</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== GAME SCREEN ========== -->
+      <section id="game-screen" class="screen">
+        <div class="game-header">
+          <a href="#">← Lobby</a>
+          <span class="room-code">ABC123</span>
+          <a href="#" onclick="showModal('rules'); return false;">? Rules</a>
+        </div>
+
+        <div class="player-panel">
+          <div class="player-avatar black">A</div>
+          <div class="player-info">
+            <h4>Anh</h4>
+            <p>Waiting...</p>
+          </div>
+          <div class="captured-pieces">
+            <div class="captured-piece red">P</div>
+            <div class="captured-piece red">T</div>
+          </div>
+        </div>
+
+        <div class="game-board">
+          <div class="board">
+            <!-- Row 10 (top - black) -->
+            <div class="board-cell palace-tl"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell palace-tr"></div>
+            <!-- Row 9 -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 8 -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 7 -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 6 -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 5 - River top -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 4 - River bottom -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 3 -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 2 -->
+            <div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div>
+            <!-- Row 1 - bottom (red) -->
+            <div class="board-cell palace-bl"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell"></div><div class="board-cell palace-br"></div>
+
+            <!-- Pieces -->
+            <div class="piece red" style="top: calc(10% - 20px); left: calc(33% - 20px);" title="Red Sâm">CT</div>
+            <div class="piece red" style="top: calc(10% - 20px); left: calc(55% - 20px);" title="Red Advisor">S</div>
+            <div class="piece black selected" style="top: calc(90% - 20px); left: calc(55% - 20px);" title="Black Sâm" onclick="toggleSelection(this)">CT</div>
+            <div class="valid-move" style="top: calc(90% - 8px); left: calc(44% - 8px);"></div>
+          </div>
+        </div>
+
+        <div class="player-panel current-turn">
+          <div class="player-avatar red">M</div>
+          <div class="player-info">
+            <h4>Minh</h4>
+            <p class="turn">● Your turn</p>
+          </div>
+          <div class="captured-pieces"></div>
+        </div>
+
+        <div class="move-history">
+          <h4>Move History</h4>
+          <div class="move-list">
+            <div class="move-item red"><span class="move-num">1.</span> red: CT d1 → d2</div>
+            <div class="move-item"><span class="move-num">2.</span> black: ct b0 → b1</div>
+            <div class="move-item red"><span class="move-num">3.</span> red: S d3 → e4</div>
+          </div>
+        </div>
+
+        <div class="game-actions">
+          <button class="btn btn-danger btn-sm">Resign</button>
+          <button class="btn btn-secondary btn-sm">Offer Draw</button>
+        </div>
+      </section>
+
+      <!-- ========== GAME OVER MODAL ========== -->
+      <section id="game-over" class="screen">
+        <div class="modal-backdrop" style="display: flex;">
+          <div class="modal game-over-content">
+            <div class="confetti">🏆 🎉</div>
+            <h2 class="red">RED WINS!</h2>
+            <p class="condition">Checkmate</p>
+            <p class="move-count">24 moves</p>
+            <div class="modal-actions" style="flex-direction: column;">
+              <button class="btn btn-primary">Rematch</button>
+              <button class="btn btn-secondary">Share Result</button>
+              <button class="btn btn-ghost">Back to Lobby</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SIDE SELECTION MODAL ========== -->
+      <section id="side-selection" class="screen">
+        <div class="modal-backdrop" style="display: flex;">
+          <div class="modal">
+            <h2 style="text-align: center;">Choose Your Side</h2>
+            <div class="side-options">
+              <div class="side-option red" onclick="selectSide('red')">
+                <span class="icon">🔴</span>
+                <span class="label">Red</span>
+              </div>
+              <div class="side-option black" onclick="selectSide('black')">
+                <span class="icon">⚫</span>
+                <span class="label">Black</span>
+              </div>
+              <div class="side-option random" onclick="selectSide('random')">
+                <span class="icon">🎲</span>
+                <span class="label">Random</span>
+              </div>
+            </div>
+            <div class="modal-actions" style="justify-content: center;">
+              <button class="btn btn-ghost" onclick="hideModals()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== HOW TO PLAY MODAL ========== -->
+      <section id="rules" class="screen">
+        <div class="modal-backdrop" style="display: flex;">
+          <div class="modal" style="max-width: 560px;">
+            <h2>How to Play</h2>
+            <div class="rules-content">
+              <h4>Board Setup</h4>
+              <p>9x10 board with River dividing the two sides. Each side has 16 pieces.</p>
+
+              <h4>Pieces</h4>
+              <div class="piece-legend">
+                <div class="piece-icon red">CT</div><span><strong>Commander (Sâm)</strong> — Moves 1 square any direction, must stay in palace</span>
+                <div class="piece-icon red">S</div><span><strong>Advisor (Sĩ)</strong> — Moves diagonally 1 square, must stay in palace</span>
+                <div class="piece-icon red">X</div><span><strong>Minister (Xe)</strong> — Moves any distance horizontally or vertically</span>
+                <div class="piece-icon red">M</div><span><strong>Horse (Mã)</strong> — Moves in L-shape (2+1), can be blocked</span>
+                <div class="piece-icon red">P</div><span><strong>Cannon (Pháo)</strong> — Moves like Xe, must jump to capture</span>
+                <div class="piece-icon red">T</div><span><strong>Soldier (Tốt)</strong> — Moves forward only; after crossing river, can also move diagonally</span>
+              </div>
+
+              <h4>Special Rules</h4>
+              <p><strong>Palace:</strong> Sâm and Advisors must stay within their palace (center 3x3 area).</p>
+              <p><strong>River:</strong> Soldiers cannot move sideways until they cross the river (center horizontal band).</p>
+              <p><strong>Sâm Sacrifice:</strong> When your Sâm is in checkmate with no legal moves, you may sacrifice your Sâm to capture the opponent's Sâm — winning immediately!</p>
+
+              <h4>Win Conditions</h4>
+              <p>• Capture opponent's Sâm<br>• Opponent has no legal moves while in check<br>• Opponent resigns</p>
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-primary" onclick="hideModals()">Got it!</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== CREATE ROOM MODAL ========== -->
+      <section id="create-room" class="screen">
+        <div class="modal-backdrop" style="display: flex;">
+          <div class="modal">
+            <h2>Create Room</h2>
+            <div class="input-group">
+              <label>Room Name (optional)</label>
+              <input type="text" class="input" placeholder="My Room">
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-primary" onclick="hideModals()">Create Room</button>
+              <button class="btn btn-ghost" onclick="hideModals()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Screen navigation
+    const screenButtons = document.querySelectorAll('#sidebar button[data-screen]');
+    const screens = document.querySelectorAll('.screen');
+
+    screenButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetScreen = btn.dataset.screen;
+
+        // Update active button
+        screenButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Show target screen
+        screens.forEach(s => s.classList.remove('active'));
+        document.getElementById(targetScreen === 'game' ? 'game-screen' : targetScreen).classList.add('active');
+      });
+    });
+
+    // Viewport toggle
+    const viewButtons = document.querySelectorAll('#viewport-toggle button');
+    const container = document.getElementById('screen-container');
+
+    viewButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (btn.dataset.view === 'mobile') {
+          container.classList.add('mobile');
+        } else {
+          container.classList.remove('mobile');
+        }
+      });
+    });
+
+    // Modals
+    function showModal(id) {
+      // Hide all modals first
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.style.display = 'none');
+
+      // Show target modal
+      const modal = document.querySelector(`#${id} .modal-backdrop`);
+      if (modal) {
+        modal.style.display = 'flex';
+        document.getElementById(id).classList.add('active');
+      }
+    }
+
+    function hideModals() {
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.style.display = 'none');
+      screens.forEach(s => s.classList.remove('active'));
+      document.querySelector('#lobby').classList.add('active');
+      screenButtons.forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-screen="lobby"]').classList.add('active');
+    }
+
+    // Side selection
+    function selectSide(side) {
+      alert(`Starting game as ${side.toUpperCase()}`);
+      hideModals();
+    }
+
+    // Toggle piece selection
+    function toggleSelection(piece) {
+      if (piece.classList.contains('selected')) {
+        piece.classList.remove('selected');
+      } else {
+        document.querySelectorAll('.piece.selected').forEach(p => p.classList.remove('selected'));
+        piece.classList.add('selected');
+      }
+    }
+
+    // Code input auto-advance
+    document.querySelectorAll('.code-input').forEach((input, index, inputs) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

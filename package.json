@@ -1,0 +1,14 @@
+{
+  "name": "co-tuong-sat",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev": "bun --cwd apps/web dev",
+    "build": "bun --cwd apps/web build",
+    "dev:api": "cd apps/api && uvicorn src.main:app --reload --port 3001"
+  }
+}
