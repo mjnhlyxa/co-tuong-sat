@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bun --cwd apps/web build",
+  "buildCommand": "npm run build",
   "outputDirectory": "apps/web/.next",
-  "installCommand": "bun install"
+  "installCommand": "npm install"
 }
